@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { DevCycleClientsideProvider } from "@devcycle/nextjs-sdk";
 import { getClientContext } from "./devcycle";
+import Navbar from "@/components/Navbar";
 // import the getClientContext method from your shared DevCycle file
 
 const geistSans = Geist({
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <DevCycleClientsideProvider context={getClientContext()}>
+          <Navbar />
           {children}
         </DevCycleClientsideProvider>
       </body>

@@ -25,3 +25,26 @@ export type JSONValue =
 export type JSONObject = {
   [key: string]: JSONValue;
 };
+
+export interface Audience {
+  _id: string;
+  _project: string;
+  name: string;
+  key: string;
+  description: string;
+  source: string;
+  filters: {
+    operator: "and" | "or";
+    filters: Array<{
+      type: string;
+      subType: string;
+      comparator: "=" | "!=" | ">" | "<" | ">=" | "<=";
+      values: string[];
+    }>;
+  };
+  _createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  tags: string[];
+  readonly: boolean;
+}

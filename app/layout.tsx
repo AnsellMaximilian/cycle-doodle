@@ -4,6 +4,7 @@ import "./globals.css";
 import { DevCycleClientsideProvider } from "@devcycle/nextjs-sdk";
 import { getClientContext } from "./devcycle";
 import Navbar from "@/components/Navbar";
+import { SessionProvider } from "next-auth/react";
 // import the getClientContext method from your shared DevCycle file
 
 const geistSans = Geist({
@@ -31,10 +32,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <DevCycleClientsideProvider context={getClientContext()}>
-          <Navbar />
-          <div className="mx-auto container p-4">{children}</div>
-        </DevCycleClientsideProvider>
+        <SessionProvider>
+          <DevCycleClientsideProvider context={getClientContext()}>
+            <Navbar />
+            <div className="mx-auto container p-4">{children}</div>
+          </DevCycleClientsideProvider>
+        </SessionProvider>
       </body>
     </html>
   );

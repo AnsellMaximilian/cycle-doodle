@@ -1,4 +1,9 @@
 import { TeamConfig, TeamKeys } from "@/types";
+import ggImg from "@/assets/grid-goblins.svg";
+
+import eeImg from "@/assets/edit-emperors.svg";
+
+import ppImg from "@/assets/paint-paladins.svg";
 
 export const TEAM_CONFIG: Record<TeamKeys, TeamConfig> = {
   "grid-goblins": {
@@ -29,4 +34,8 @@ export const TEAM_CONFIG: Record<TeamKeys, TeamConfig> = {
   },
 };
 
-export default TEAM_CONFIG;
+export const TEAM_IMAGES: Record<TeamKeys, string> = {
+  "edit-emperors": eeImg,
+  "grid-goblins": ggImg,
+  "paint-paladins": ppImg,
+};

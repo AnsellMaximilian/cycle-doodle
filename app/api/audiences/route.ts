@@ -1,10 +1,9 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    // Step 1: Get OAuth Token
     const oauthResponse = await fetch("https://auth.devcycle.com/oauth/token", {
       method: "POST",
       headers: {
@@ -28,9 +27,8 @@ export async function GET(req: NextRequest) {
 
     const { access_token } = await oauthResponse.json();
 
-    // Step 2: Fetch Audiences
     const audiencesResponse = await fetch(
-      `https://api.devcycle.com/v1/projects/${project}/audiences`,
+      `https://api.devcycle.com/v1/projects/${process.env.DEVCYCLE_PROJECT}/audiences`,
       {
         method: "GET",
         headers: {

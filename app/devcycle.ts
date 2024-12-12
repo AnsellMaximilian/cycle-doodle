@@ -1,8 +1,10 @@
+import { auth } from "@/auth";
 import { setupDevCycle } from "@devcycle/nextjs-sdk/server";
 
 const getUserIdentity = async () => {
+  const session = await auth();
   return {
-    user_id: "myUser.id",
+    user_id: session?.user?.email ? session.user.email : "NONE",
   };
 };
 

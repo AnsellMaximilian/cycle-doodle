@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <DevCycleClientsideProvider context={getClientContext()}>
           <Navbar />
-          {children}
+          <div className="mx-auto container p-4">{children}</div>
         </DevCycleClientsideProvider>
       </body>
     </html>

@@ -18,7 +18,6 @@ const LinkItem = ({ href, label }: { href: string; label: string }) => {
 export default async function Navbar() {
   const session = await auth();
 
-  console.log({ session });
   return (
     <header className="border-b border shadow-md">
       <nav className="mx-auto container p-4 flex items-center gap-8">
@@ -27,6 +26,7 @@ export default async function Navbar() {
         </Link>
         <ul className="flex items-center gap-4">
           <LinkItem href="/" label="Home" />
+          <LinkItem href="/play" label="Play" />
         </ul>
         <div className="ml-auto items-center flex gap-2">
           {session ? (

@@ -89,14 +89,19 @@ export default function PlayArea() {
       <div>
         <Button
           onClick={async () => {
-            try {
-              const response = await axios.post("/api/submit-drawing", {
-                featureKey: "prompts",
-              });
+            if (selectedPrompt) {
+              try {
+                const response = await axios.post("/api/submit-drawing", {
+                  featureKey: "prompts",
+                  variationKey: "main-prompts",
+                  content: content,
+                  promptId: selectedPrompt.id,
+                });
 
-              console.log({ response });
-            } catch (err: any) {
-              console.error("Error fetching feature:", err);
+                console.log({ response });
+              } catch (err: any) {
+                console.error("Error fetching feature:", err);
+              }
             }
           }}
         >

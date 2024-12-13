@@ -25,11 +25,13 @@ export default function PlayArea() {
 
   const { data: session } = useSession();
 
-  const userIsInATeam = audiences.some((a) =>
+  const userTeam = audiences.find((a) =>
     a.filters.filters.some((f) => f.values.includes(session?.user?.email || ""))
   );
 
-  if (!userIsInATeam)
+  console.log({ userTeam });
+
+  if (!userTeam)
     return <TeamSelection audiences={audiences} setAudiences={setAudiences} />;
 
   if (!selectedPrompt) {

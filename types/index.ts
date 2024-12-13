@@ -48,3 +48,11 @@ export interface Audience {
   tags: string[];
   readonly: boolean;
 }
+
+export interface Prompt {
+  id: string;
+  content: string[];
+  guesser: string | null;
+  drawer: string | null;
+  prompt?: string;
+}

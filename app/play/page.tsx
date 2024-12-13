@@ -1,9 +1,12 @@
-import Grid from "./Grid";
+import PlayArea from "./PlayArea";
+import PlayContextProvider from "./PlayContextProvider";
 
 export default async function PlayPage() {
   return (
     <div>
-      <Grid />
+      <PlayContextProvider>
+        <PlayArea />
+      </PlayContextProvider>
     </div>
   );
 }

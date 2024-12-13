@@ -5,10 +5,11 @@ import { Audience, TeamConfig } from "@/types";
 import { useVariableValue } from "@devcycle/nextjs-sdk";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TeamSelection from "./TeamSelection";
+import axios from "axios";
 
-export default function Grid({ audiences }: { audiences: Audience[] }) {
+export default function Grid() {
   const { data: session } = useSession();
 
   // @ts-expect-error No problem
@@ -18,15 +19,29 @@ export default function Grid({ audiences }: { audiences: Audience[] }) {
     TEAM_CONFIG["grid-goblins"]
   ) as TeamConfig;
 
+  const [audiences, setAudiences] = useState<Audience[]>([]);
+  const [loadingAudiences, setLoadingAudiences] = useState(false);
+
   const [selectedColour, setSelectedColour] = useState(teamValues.colors[0]);
 
   const [content, setContent] = useState<string[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const audienceRes = await axios.get("/api/audiences");
+
+      const audiences: Audience[] = audienceRes.data as Audience[];
+
+      setAudiences(audiences);
+    })();
+  }, []);
 
   const userIsInATeam = audiences.some((a) =>
     a.filters.filters.some((f) => f.values.includes(session?.user?.email || ""))
   );
 
-  if (!userIsInATeam) return <TeamSelection audiences={audiences} />;
+  if (!userIsInATeam)
+    return <TeamSelection audiences={audiences} setAudiences={setAudiences} />;
   return (
     <div className="flex gap-2 items-center">
       <div

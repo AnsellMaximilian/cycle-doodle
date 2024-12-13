@@ -1,38 +1,18 @@
+import { fetchOAuthToken } from "@/utils/fetchOAuth";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const oauthResponse = await fetch("https://auth.devcycle.com/oauth/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "client_credentials",
-        audience: "https://api.devcycle.com/",
-        client_id: process.env.DEVCYCLE_CLIENT_ID || "",
-        client_secret: process.env.DEVCYCLE_CLIENT_SECRET || "",
-      }),
-    });
-
-    if (!oauthResponse.ok) {
-      const error = await oauthResponse.json();
-      return NextResponse.json(
-        { error: "Failed to fetch OAuth token", details: error },
-        { status: oauthResponse.status }
-      );
-    }
-
-    const { access_token } = await oauthResponse.json();
+    const token = await fetchOAuthToken();
 
     const audiencesResponse = await fetch(
       `https://api.devcycle.com/v1/projects/${process.env.DEVCYCLE_PROJECT}/audiences`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );

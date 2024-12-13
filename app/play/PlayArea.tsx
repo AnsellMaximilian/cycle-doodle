@@ -6,6 +6,8 @@ import React from "react";
 import TeamSelection from "./TeamSelection";
 import PromptList from "./PromptList";
 import { userPlay } from "@/contexts/PlayContext";
+import Button from "@/components/Button";
+import axios from "axios";
 
 export default function PlayArea() {
   const {
@@ -83,6 +85,23 @@ export default function PlayArea() {
             );
           })}
         </div>
+      </div>
+      <div>
+        <Button
+          onClick={async () => {
+            try {
+              const response = await axios.post("/api/submit-drawing", {
+                featureKey: "prompts",
+              });
+
+              console.log({ response });
+            } catch (err: any) {
+              console.error("Error fetching feature:", err);
+            }
+          }}
+        >
+          Submit
+        </Button>
       </div>
     </div>
   );

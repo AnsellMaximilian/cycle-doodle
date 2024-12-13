@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import cycleTeamRoles from "@/utils/cycleTeamRoles";
 import { fetchOAuthToken } from "@/utils/fetchOAuth";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
@@ -43,6 +44,11 @@ export async function POST(request: NextRequest) {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+
+    //test
+    const swagRes = await cycleTeamRoles(projectId, "team-role", token);
+
+    console.log(JSON.stringify(swagRes));
 
     const feature = featureResponse.data;
 
@@ -116,7 +122,7 @@ export async function POST(request: NextRequest) {
       controlVariation: feature.controlVariation,
     };
 
-    console.log(JSON.stringify(updatedFeature));
+    // console.log(JSON.stringify(updatedFeature));
 
     const patchResponse = await axios.patch(
       `https://api.devcycle.com/v1/projects/${projectId}/features/${featureKey}`,

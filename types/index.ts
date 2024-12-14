@@ -119,3 +119,5 @@ export interface SDKVisibility {
   client: boolean;
   server: boolean;
 }
+
+export type TeamRoleKeys = "guesser" | "drawer" | "voter";

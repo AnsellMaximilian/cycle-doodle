@@ -1,17 +1,20 @@
 "use client";
 
 import { TEAM_CONFIG } from "@/const";
-import { Audience, Prompt, TeamConfig } from "@/types";
+import { Audience, Prompt, TeamConfig, TeamRoleKeys } from "@/types";
 import { useVariableValue } from "@devcycle/nextjs-sdk";
 import React, { ReactNode, useEffect, useState } from "react";
 import axios from "axios";
 import { PlayContext } from "@/contexts/PlayContext";
+import { useSession } from "next-auth/react";
 
 export default function PlayContextProvider({
   children,
 }: {
   children: ReactNode;
 }) {
+  const { data: session } = useSession();
+
   // @ts-expect-error No problem
   const teamValues = useVariableValue(
     "team-values",
@@ -20,6 +23,7 @@ export default function PlayContextProvider({
   ) as TeamConfig;
 
   const promptsVariable = useVariableValue("prompts", { prompts: [] });
+  const teamRole = useVariableValue("team-role", "drawer") as TeamRoleKeys;
 
   // @ts-expect-error No problem
   const prompts = promptsVariable.prompts as Prompt[];
@@ -43,6 +47,10 @@ export default function PlayContextProvider({
     })();
   }, []);
 
+  const userTeam = audiences.find((a) =>
+    a.filters.filters.some((f) => f.values.includes(session?.user?.email || ""))
+  );
+
   return (
     <PlayContext.Provider
       value={{
@@ -56,6 +64,8 @@ export default function PlayContextProvider({
         teamValues,
         selectedColour,
         setSelectedColour,
+        teamRole,
+        userTeam,
       }}
     >
       {children}

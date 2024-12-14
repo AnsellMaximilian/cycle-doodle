@@ -44,11 +44,8 @@ export async function POST(request: NextRequest) {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-
-    //test
-    const swagRes = await cycleTeamRoles(projectId, "team-role", token);
-
-    console.log(JSON.stringify(swagRes));
+    // cycle team role
+    await cycleTeamRoles(projectId, "team-role", token);
 
     const feature = featureResponse.data;
 
@@ -121,8 +118,6 @@ export async function POST(request: NextRequest) {
       tags: feature.tags,
       controlVariation: feature.controlVariation,
     };
-
-    // console.log(JSON.stringify(updatedFeature));
 
     const patchResponse = await axios.patch(
       `https://api.devcycle.com/v1/projects/${projectId}/features/${featureKey}`,

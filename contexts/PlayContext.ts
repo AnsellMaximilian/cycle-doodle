@@ -1,4 +1,4 @@
-import { Audience, Prompt, TeamConfig } from "@/types";
+import { Audience, Prompt, TeamConfig, TeamRoleKeys } from "@/types";
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 export interface PlayContextData {
   content: string[];
@@ -11,13 +11,15 @@ export interface PlayContextData {
   teamValues: TeamConfig;
   selectedColour: string;
   setSelectedColour: Dispatch<SetStateAction<string>>;
+  teamRole: TeamRoleKeys;
+  userTeam: Audience | null | undefined;
 }
 
 export const PlayContext = createContext<PlayContextData | undefined>(
   undefined
 );
 
-export const userPlay = (): PlayContextData => {
+export const usePlay = (): PlayContextData => {
   const context = useContext(PlayContext);
   if (!context) {
     throw new Error(

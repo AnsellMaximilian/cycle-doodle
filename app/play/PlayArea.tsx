@@ -2,12 +2,16 @@
 
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
-import React from "react";
+import React, { ReactNode } from "react";
 import TeamSelection from "./TeamSelection";
 import PromptList from "./PromptList";
-import { userPlay } from "@/contexts/PlayContext";
+import { usePlay } from "@/contexts/PlayContext";
 import Button from "@/components/Button";
 import axios from "axios";
+import Drawer from "./team-role/Drawer";
+import UserInfo from "./UserInfo";
+import Voter from "./team-role/Voter";
+import Guesser from "./team-role/Guesser";
 
 export default function PlayArea() {
   const {
@@ -21,94 +25,38 @@ export default function PlayArea() {
     teamValues,
     selectedColour,
     setSelectedColour,
-  } = userPlay();
-
-  const { data: session } = useSession();
-
-  const userTeam = audiences.find((a) =>
-    a.filters.filters.some((f) => f.values.includes(session?.user?.email || ""))
-  );
-
-  console.log({ userTeam });
+    userTeam,
+    teamRole,
+  } = usePlay();
 
   if (!userTeam)
     return <TeamSelection audiences={audiences} setAudiences={setAudiences} />;
 
-  if (!selectedPrompt) {
-    return <PromptList prompts={prompts} />;
+  // if (!selectedPrompt) {
+  //   return <PromptList prompts={prompts} />;
+  // }
+  let RoleComponent: null | ReactNode = null;
+
+  switch (teamRole) {
+    case "drawer":
+      RoleComponent = <Drawer />;
+
+      break;
+
+    case "guesser":
+      RoleComponent = <Guesser />;
+
+      break;
+
+    default:
+      RoleComponent = <Voter />;
+      break;
   }
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-center font-bold text-2xl">
-        Draw {selectedPrompt.prompt}
-      </h1>
-      <div className="flex gap-2 items-center">
-        <div
-          className={`${
-            teamValues.gridSize > 100 ? "grid-cols-12" : "grid-cols-10"
-          } grid w-[600px] mx-auto border-black border`}
-        >
-          {Array.from({ length: teamValues.gridSize }).map((_, i) => {
-            return (
-              <div
-                onClick={() => {
-                  setContent((prev) => {
-                    const content = [...prev];
-
-                    if (teamValues.canEdit || !!!content[i]) {
-                      content[i] = selectedColour;
-                    }
-                    return content;
-                  });
-                }}
-                key={i}
-                className="w-full aspect-square border-black border hover:brightness-90 bg-white cursor-pointer"
-                style={{ backgroundColor: content[i] }}
-              ></div>
-            );
-          })}
-        </div>
-        <div className="p-4 flex flex-col gap-4">
-          {teamValues.colors.map((c) => {
-            return (
-              <div
-                onClick={() => setSelectedColour(c)}
-                className={clsx(
-                  "w-10 h-10 rounded-full cursor-pointer hover:brightness-90 p-1 overflow-hidden bg-white border border-white",
-                  selectedColour === c ? "bg-zinc-200" : "bg-white"
-                )}
-                key={c}
-              >
-                <div
-                  className="w-full h-full rounded-full"
-                  style={{ backgroundColor: c }}
-                ></div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <div>
-        <Button
-          onClick={async () => {
-            if (selectedPrompt) {
-              try {
-                const response = await axios.post("/api/submit-drawing", {
-                  featureKey: "prompts",
-                  variationKey: "main-prompts",
-                  content: content,
-                  promptId: selectedPrompt.id,
-                });
-
-                console.log({ response });
-              } catch (err: any) {
-                console.error("Error fetching feature:", err);
-              }
-            }
-          }}
-        >
-          Submit
-        </Button>
+    <div className="flex flex-col gap-4">
+      <UserInfo />
+      <div className={clsx("border border-gray-200 shadow-sm rounded-md p-4")}>
+        {RoleComponent}
       </div>
     </div>
   );

@@ -62,8 +62,6 @@ export default function TeamSelection({
     }
   };
 
-  console.log(audiences);
-
   return (
     <div>
       <h1 className="text-center text-2xl font-bold">Select a Team</h1>

@@ -35,8 +35,6 @@ export default async function cycleTeamRoles(
       throw new Error("No active configuration found");
     }
 
-    console.log("ACTIV", JSON.stringify(activeConfig));
-
     // amke sure the active configuration has exactly 3 targets
     if (activeConfig.targets.length !== 3) {
       throw new Error(
@@ -69,6 +67,7 @@ export default async function cycleTeamRoles(
             ],
           },
         },
+        distribution: target.distribution,
       })
     );
 
@@ -77,10 +76,6 @@ export default async function cycleTeamRoles(
       targets: updatedTargets,
       status: activeConfig.status,
     };
-
-    console.log(
-      `https://api.devcycle.com/v1/projects/${projectId}/features/${featureKey}/configurations?environment=${activeConfig._environment}`
-    );
 
     // Send the PATCH request to update the configuration
     const patchResponse = await axios.patch(

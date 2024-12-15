@@ -26,7 +26,13 @@ export async function GET() {
     }
 
     const audiences = await audiencesResponse.json();
-    return NextResponse.json(audiences);
+    return NextResponse.json(
+      audiences.filter((audience: any) => {
+        return ["grid-goblins", "paint-paladins", "edit-emperors"].includes(
+          audience.key
+        );
+      })
+    );
   } catch (error) {
     console.error("Error handling request:", error);
     return NextResponse.json(

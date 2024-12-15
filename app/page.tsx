@@ -7,7 +7,7 @@ import Button from "@/components/Button";
 
 export default async function Home() {
   return (
-    <div className="flex flex-col items-center py-16">
+    <div className="flex flex-col items-center py-16 grow bg-[url('/cycle-doodle-bg.png')]">
       <Image src={logo} width={200} height={200} alt="logo" />
       <div className="flex flex-col text-xs font-bold mt-4">
         <div className="text-center">Powered By</div>

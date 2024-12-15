@@ -32,12 +32,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <SessionProvider>
           <DevCycleClientsideProvider context={getClientContext()}>
             <Navbar />
-            <div className="mx-auto container p-4">{children}</div>
+            <div className="mx-auto container p-4 grow flex flex-col">
+              {children}
+            </div>
           </DevCycleClientsideProvider>
         </SessionProvider>
         <ToastContainer />

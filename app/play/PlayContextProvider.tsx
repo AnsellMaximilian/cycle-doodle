@@ -19,7 +19,7 @@ export default function PlayContextProvider({
   const teamValues = useVariableValue(
     "team-values",
     // @ts-expect-error No Problem
-    TEAM_CONFIG["grid-goblins"]
+    TEAM_CONFIG["paint-paladins"]
   ) as TeamConfig;
 
   const promptsVariable = useVariableValue("prompts", { prompts: [] });
@@ -29,7 +29,7 @@ export default function PlayContextProvider({
   const prompts = promptsVariable.prompts as Prompt[];
 
   const [audiences, setAudiences] = useState<Audience[]>([]);
-  const [loadingAudiences, setLoadingAudiences] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [selectedColour, setSelectedColour] = useState(teamValues.colors[0]);
 
@@ -44,8 +44,14 @@ export default function PlayContextProvider({
       const audiences: Audience[] = audienceRes.data as Audience[];
 
       setAudiences(audiences);
+
+      setLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+    setContent([]);
+  }, [teamRole]);
 
   const userTeam = audiences.find((a) =>
     a.filters.filters.some((f) => f.values.includes(session?.user?.email || ""))
@@ -66,6 +72,8 @@ export default function PlayContextProvider({
         setSelectedColour,
         teamRole,
         userTeam,
+        loading,
+        setLoading,
       }}
     >
       {children}

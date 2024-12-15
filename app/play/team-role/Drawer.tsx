@@ -16,6 +16,7 @@ export default function Drawer() {
     content,
     setSelectedColour,
     prompts,
+    userTeam,
   } = usePlay();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -96,6 +97,7 @@ export default function Drawer() {
                   variationKey: "main-prompts",
                   content: content,
                   promptId: promptToDraw.id,
+                  teamKey: userTeam?.key,
                 });
                 toast.success("Submitted drawing.");
               } catch (err: any) {
@@ -108,7 +110,7 @@ export default function Drawer() {
             }
           }}
         >
-          Submit
+          Submit Drawing
         </Button>
       </div>
     </div>

@@ -55,6 +55,7 @@ export interface Prompt {
   guesser: string | null;
   drawer: string | null;
   prompt: string;
+  score: null | number;
 }
 
 export interface Feature {

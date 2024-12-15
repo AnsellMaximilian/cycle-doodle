@@ -12,6 +12,8 @@ import Drawer from "./team-role/Drawer";
 import UserInfo from "./UserInfo";
 import Voter from "./team-role/Voter";
 import Guesser from "./team-role/Guesser";
+import Guest from "./Guest";
+import Loading from "./Loading";
 
 export default function PlayArea() {
   const {
@@ -27,7 +29,14 @@ export default function PlayArea() {
     setSelectedColour,
     userTeam,
     teamRole,
+    loading,
   } = usePlay();
+
+  const session = useSession();
+
+  if (session.status !== "authenticated") return <Guest />;
+
+  if (loading) return <Loading />;
 
   if (!userTeam)
     return <TeamSelection audiences={audiences} setAudiences={setAudiences} />;

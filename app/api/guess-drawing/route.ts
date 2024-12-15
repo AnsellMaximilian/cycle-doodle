@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import cycleTeamRoles from "@/utils/cycleTeamRoles";
 import { fetchOAuthToken } from "@/utils/fetchOAuth";
+import isGuessCorrect from "@/utils/isGuessCorrect";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,14 +24,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { featureKey, variationKey, content, promptId, teamKey } =
+  const { featureKey, variationKey, promptId, guess, teamKey } =
     await request.json();
 
-  if (!featureKey || !variationKey || !content || !promptId) {
+  if (!featureKey || !variationKey || !promptId || !guess) {
     return NextResponse.json(
       {
-        error:
-          "Feature key, variation key, content, and prompt ID are required",
+        error: "Feature key, variation key, guess, and prompt ID are required",
       },
       { status: 400 }
     );
@@ -68,15 +68,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Prompt not found" }, { status: 404 });
     }
 
-    if (prompt.drawer !== null) {
+    if (prompt.guesser !== null) {
       return NextResponse.json(
-        { error: "Prompt already has a drawer" },
+        { error: "Prompt already has a guesser" },
         { status: 400 }
       );
     }
 
-    prompt.content = content;
-    prompt.drawer = teamKey;
+    prompt.guesser = teamKey;
+    prompt.guess = guess;
 
     const variables = feature.variables.map((v: any) => ({
       name: v.name,
@@ -120,6 +120,8 @@ export async function POST(request: NextRequest) {
       controlVariation: feature.controlVariation,
     };
 
+    console.log("ABOUT TO PATCH!");
+
     const patchResponse = await axios.patch(
       `https://api.devcycle.com/v1/projects/${projectId}/features/${featureKey}`,
       updatedFeature,
@@ -128,8 +130,13 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    console.log(patchResponse);
+
     if (patchResponse.status === 200) {
-      return NextResponse.json(patchResponse.data);
+      return NextResponse.json({
+        correct: isGuessCorrect(guess, prompt.prompt),
+        answer: prompt.prompt,
+      });
     } else {
       return NextResponse.json(
         { error: "Failed to update feature" },

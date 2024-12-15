@@ -13,6 +13,8 @@ export interface PlayContextData {
   setSelectedColour: Dispatch<SetStateAction<string>>;
   teamRole: TeamRoleKeys;
   userTeam: Audience | null | undefined;
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const PlayContext = createContext<PlayContextData | undefined>(

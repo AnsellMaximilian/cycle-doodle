@@ -23,14 +23,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { featureKey, variationKey, content, promptId, teamKey } =
-    await request.json();
+  const { featureKey, variationKey, promptId, score } = await request.json();
 
-  if (!featureKey || !variationKey || !content || !promptId) {
+  if (!featureKey || !variationKey || !promptId || !score) {
     return NextResponse.json(
       {
-        error:
-          "Feature key, variation key, content, and prompt ID are required",
+        error: "Feature key, variation key, score, and prompt ID are required",
       },
       { status: 400 }
     );
@@ -68,15 +66,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Prompt not found" }, { status: 404 });
     }
 
-    if (prompt.drawer !== null) {
-      return NextResponse.json(
-        { error: "Prompt already has a drawer" },
-        { status: 400 }
-      );
-    }
-
-    prompt.content = content;
-    prompt.drawer = teamKey;
+    prompt.score = score;
 
     const variables = feature.variables.map((v: any) => ({
       name: v.name,

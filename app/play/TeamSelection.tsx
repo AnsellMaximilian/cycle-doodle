@@ -69,7 +69,7 @@ export default function TeamSelection({
         You haven&apos;t selected a team yet. Select one of the teams below
         before playing. Each team has a unique advantage over the others.
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid col-span-1 md:grid-cols-3 gap-4">
         {audiences.map((a) => {
           return (
             <div

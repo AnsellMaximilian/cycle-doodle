@@ -4,6 +4,7 @@ import React from "react";
 import logo from "@/assets/cycle-doodle-logo.svg";
 import { auth, signIn, signOut } from "@/auth";
 import Button from "./Button";
+import { getVariableValue } from "@/app/devcycle";
 
 const LinkItem = ({ href, label }: { href: string; label: string }) => {
   return (
@@ -17,6 +18,7 @@ const LinkItem = ({ href, label }: { href: string; label: string }) => {
 
 export default async function Navbar() {
   const session = await auth();
+  const isAdmin = await getVariableValue("is-admin", false);
 
   return (
     <header className="border-b border shadow-md">
@@ -28,6 +30,8 @@ export default async function Navbar() {
           {/* <LinkItem href="/" label="Home" /> */}
           <LinkItem href="/play" label="Play" />
           <LinkItem href="/gallery" label="Gallery" />
+
+          {isAdmin && <LinkItem href="/admin" label="Admin" />}
         </ul>
         <div className="ml-auto items-center flex gap-2">
           {session ? (

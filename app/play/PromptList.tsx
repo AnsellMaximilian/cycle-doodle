@@ -42,14 +42,14 @@ export default function PromptList() {
   return (
     <div className="">
       <div className="font-bold text-2xl mb-8 text-center">Prompt Gallery</div>
-      <div className="mb-4 flex gap-4">
+      <div className="mb-4 flex gap-4 items-end">
         <div>
           <label htmlFor="role" className="text-xs font-bold">
             Role
           </label>
           <select
             id="role"
-            className="w-[300px] flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+            className="w-[100px] md:w-[300px] flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
             value={filterByRole}
             onChange={(e) => {
               setFilterByRole(e.target.value as TeamRoleKeys | "all");
@@ -69,7 +69,7 @@ export default function PromptList() {
           <select
             id="role"
             disabled={filterByRole === "all"}
-            className="w-[300px] flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+            className="w-[100px] md:w-[300px] flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
             value={filterByTeam}
             onChange={(e) => {
               setFilterByTeam(e.target.value as TeamKeys | "none");

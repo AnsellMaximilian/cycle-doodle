@@ -6,7 +6,7 @@ import PromptCard from "./PromptCard";
 import { usePlay } from "@/contexts/PlayContext";
 import Loading from "./Loading";
 import Button from "@/components/Button";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTimes } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { normalizeString } from "@/utils/isGuessCorrect";
@@ -200,8 +200,22 @@ export default function PromptList() {
 
       {/* Create Modal */}
       {createModalOpen && (
-        <div className="fixed inset-0 bg-gray-500/40 flex items-center justify-center">
-          <div className="p-4 bg-white rounded-md shadow-md border border-gray-200">
+        <div
+          className="fixed inset-0 bg-gray-500/40 flex items-center justify-center z-30"
+          onClick={() => {
+            setcreateModalOpen(false);
+          }}
+        >
+          <div
+            className="p-4 bg-white rounded-md shadow-md border border-gray-200 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-2 right-2"
+              onClick={() => setcreateModalOpen(false)}
+            >
+              <FaTimes />
+            </button>
             <h2 className="text-xl font-bold text-center mb-8">
               Create New Prompt
             </h2>

@@ -4,11 +4,11 @@ import clsx from "clsx";
 import React from "react";
 import Image from "next/image";
 import logo from "@/assets/cycle-doodle-logo.svg";
-import { FaRegStar, FaStar, FaCheck, FaTimes } from "react-icons/fa";
+import { FaRegStar, FaStar, FaCheck, FaTimes, FaTrash } from "react-icons/fa";
 import isGuessCorrect from "@/utils/isGuessCorrect";
 
 export default function PromptCard({ prompt }: { prompt: Prompt }) {
-  const { setSelectedPrompt, audiences, loading } = usePlay();
+  const { setSelectedPrompt, audiences, isAdmin } = usePlay();
   const drawn = !!prompt.drawer;
 
   const guessed = !!prompt.guesser;
@@ -25,11 +25,22 @@ export default function PromptCard({ prompt }: { prompt: Prompt }) {
     <div
       onClick={() => setSelectedPrompt(prompt)}
       className={clsx(
-        "p-4 rounded-md border border-gray-200 w-full aspect-square flex flex-col gap-4 items-center hover:scale-105 cursor-pointer transition-all duration-100 shadow-sm"
+        "p-4 rounded-md border border-gray-200 w-full aspect-square flex flex-col gap-4 items-center hover:scale-105 cursor-pointer transition-all duration-100 shadow-sm relative group"
       )}
     >
+      {isAdmin && (
+        <button
+          className="hidden group-hover:block absolute top-4 right-4 bg-red-600 text-white rounded-md p-3 hover:opacity-90"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <FaTrash />
+        </button>
+      )}
+
       <div className="text-center font-bold text-xl">
-        {guessed ? prompt.prompt : "???"}
+        {guessed || isAdmin ? prompt.prompt : "???"}
       </div>
       {drawer ? (
         <div

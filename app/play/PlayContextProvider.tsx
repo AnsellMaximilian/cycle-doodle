@@ -23,6 +23,8 @@ export default function PlayContextProvider({
   ) as TeamConfig;
 
   const promptsVariable = useVariableValue("prompts", { prompts: [] });
+  const isAdmin = useVariableValue("is-admin", false);
+
   const teamRole = useVariableValue("team-role", "drawer") as TeamRoleKeys;
 
   // @ts-expect-error No problem
@@ -74,6 +76,7 @@ export default function PlayContextProvider({
         userTeam,
         loading,
         setLoading,
+        isAdmin,
       }}
     >
       {children}

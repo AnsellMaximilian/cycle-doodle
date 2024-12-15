@@ -6,14 +6,67 @@ import PromptCard from "./PromptCard";
 import { usePlay } from "@/contexts/PlayContext";
 import Loading from "./Loading";
 import Button from "@/components/Button";
+import { FaPlus } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { normalizeString } from "@/utils/isGuessCorrect";
 
 export default function PromptList() {
-  const { prompts, loading, audiences } = usePlay();
+  const { prompts, loading, audiences, isAdmin } = usePlay();
 
   const [filterByRole, setFilterByRole] = useState<TeamRoleKeys | "all">("all");
   const [filterByTeam, setFilterByTeam] = useState<TeamKeys | "none">("none");
 
   const [filteredPrompts, setFilteredPrompts] = useState<Prompt[]>(prompts);
+
+  // admin
+  const [isAdminUpdating, setIsAdminUpdating] = useState(false);
+  const [newPromptName, setNewPromptName] = useState("");
+  const [createModalOpen, setcreateModalOpen] = useState(false);
+
+  const handleCreate = async () => {
+    if (newPromptName.length < 3) {
+      toast.error("Prompt must at least be 3 characters long.");
+      return;
+    }
+
+    const foundPrompt = prompts.find(
+      (p) => normalizeString(p.prompt) === normalizeString(newPromptName)
+    );
+    if (foundPrompt) {
+      toast.error("Prompt already exists.");
+      return;
+    }
+
+    try {
+      setIsAdminUpdating(true);
+      const newPrompt: Prompt = {
+        content: [],
+        drawer: null,
+        guess: null,
+        guesser: null,
+        id: normalizeString(newPromptName),
+        prompt: newPromptName,
+        score: null,
+      };
+      const res = await axios.post("/api/update-prompts", {
+        featureKey: "prompts",
+        variationKey: "main-prompts",
+        newPrompts: [...prompts, newPrompt],
+      });
+
+      toast.success(`Updated prompts successfully`);
+    } catch (err: any) {
+      toast.error("Failed to update prompts");
+
+      setIsAdminUpdating(false);
+
+      console.error("Error fetching feature:", err);
+    }
+    setNewPromptName("");
+    setcreateModalOpen(false);
+    setIsAdminUpdating(false);
+  };
 
   const handleFilter = () => {
     const filteredPrompts = prompts.filter((p) => {
@@ -36,6 +89,12 @@ export default function PromptList() {
   useEffect(() => {
     if (filterByRole === "all") setFilterByTeam("none");
   }, [filterByRole]);
+
+  useEffect(() => {
+    setFilteredPrompts(prompts);
+
+    setFilterByRole("all");
+  }, [prompts]);
 
   if (loading) return <Loading />;
 
@@ -123,6 +182,41 @@ export default function PromptList() {
           >
             Reset
           </Button>
+        </div>
+      )}
+
+      {isAdmin && (
+        <button
+          disabled={isAdminUpdating}
+          className="hover:opacity-90 fixed bottom-8 right-8 w-16 h-16 bg-blue-600 rounded-full text-white flex items-center justify-center disabled:opacity-70"
+          onClick={async () => {
+            setcreateModalOpen(true);
+            setNewPromptName("");
+          }}
+        >
+          <FaPlus />
+        </button>
+      )}
+
+      {/* Create Modal */}
+      {createModalOpen && (
+        <div className="fixed inset-0 bg-gray-500/40 flex items-center justify-center">
+          <div className="p-4 bg-white rounded-md shadow-md border border-gray-200">
+            <h2 className="text-xl font-bold text-center mb-8">
+              Create New Prompt
+            </h2>
+            <div className="flex flex-col gap-4">
+              <input
+                placeholder="New Prompt"
+                onChange={(e) => setNewPromptName(e.target.value)}
+                value={newPromptName}
+                className="mx-auto w-[300px] flex h-9 max-w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              />
+              <Button disabled={isAdminUpdating} onClick={handleCreate}>
+                Create
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -1,3 +1,4 @@
+import { getVariableValue } from "@/app/devcycle";
 import { auth } from "@/auth";
 import cycleTeamRoles from "@/utils/cycleTeamRoles";
 import { fetchOAuthToken } from "@/utils/fetchOAuth";
@@ -24,17 +25,22 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { featureKey, variationKey, promptId, guess, teamKey } =
-    await request.json();
+  const { featureKey, variationKey, newPrompts } = await request.json();
 
-  if (!featureKey || !variationKey || !promptId || !guess) {
+  if (!featureKey || !variationKey || !newPrompts) {
     return NextResponse.json(
       {
-        error: "Feature key, variation key, guess, and prompt ID are required",
+        error: "Feature key, variation key, newPrompts are required",
       },
       { status: 400 }
     );
   }
+
+  //   const isAdmin = await getVariableValue("is-admin", false);
+
+  //   return NextResponse.json({
+  //     admin: isAdmin,
+  //   });
 
   try {
     const token = await fetchOAuthToken();
@@ -45,8 +51,6 @@ export async function POST(request: NextRequest) {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    // cycle team role
-    await cycleTeamRoles(projectId, "team-role", token);
 
     const feature = featureResponse.data;
 
@@ -61,22 +65,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const prompts = variation.variables.prompts.prompts;
-    const prompt = prompts.find((p: any) => p.id === promptId);
-
-    if (!prompt) {
-      return NextResponse.json({ error: "Prompt not found" }, { status: 404 });
-    }
-
-    if (prompt.guesser !== null) {
-      return NextResponse.json(
-        { error: "Prompt already has a guesser" },
-        { status: 400 }
-      );
-    }
-
-    prompt.guesser = teamKey;
-    prompt.guess = guess;
+    const prompts = newPrompts;
 
     const variables = feature.variables.map((v: any) => ({
       name: v.name,
@@ -129,10 +118,7 @@ export async function POST(request: NextRequest) {
     );
 
     if (patchResponse.status === 200) {
-      return NextResponse.json({
-        correct: isGuessCorrect(guess, prompt.prompt),
-        answer: prompt.prompt,
-      });
+      return NextResponse.json(patchResponse.data);
     } else {
       return NextResponse.json(
         { error: "Failed to update feature" },

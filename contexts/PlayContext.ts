@@ -15,6 +15,7 @@ export interface PlayContextData {
   userTeam: Audience | null | undefined;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
+  isAdmin: boolean;
 }
 
 export const PlayContext = createContext<PlayContextData | undefined>(

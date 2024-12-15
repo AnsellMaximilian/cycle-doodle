@@ -76,7 +76,7 @@ export default function TeamSelection({
               key={a._id}
               className={clsx(
                 "rounded-md border-gray-200 p-4 shadow-md flex flex-col border-4 gap-4 items-center hover:scale-105 transition-all duration-100 cursor-pointer hover:bg-gray-100",
-                selectedTeam?._id === a._id ? "border-[#323232] " : ""
+                selectedTeam?._id === a._id ? "border-[#2e2e2e] " : ""
               )}
               onClick={() => setSelectedTeam(a)}
             >

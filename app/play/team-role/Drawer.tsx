@@ -89,13 +89,21 @@ export default function Drawer() {
         <Button
           disabled={isSubmitting}
           onClick={async () => {
+            const adjustedContent = Array.from({
+              length: teamValues.gridSize,
+            }).map((_, i) => {
+              const cell = content[i];
+
+              return cell ? cell : null;
+            });
+
             if (promptToDraw) {
               try {
                 setIsSubmitting(true);
                 const response = await axios.post("/api/submit-drawing", {
                   featureKey: "prompts",
                   variationKey: "main-prompts",
-                  content: content,
+                  content: adjustedContent,
                   promptId: promptToDraw.id,
                   teamKey: userTeam?.key,
                 });

@@ -4,24 +4,39 @@ import Button from "@/components/Button";
 import { usePlay } from "@/contexts/PlayContext";
 import axios from "axios";
 import clsx from "clsx";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PromptList from "../PromptList";
+import { toast } from "react-toastify";
 
 export default function Drawer() {
   const {
-    selectedPrompt,
     teamValues,
     setContent,
     selectedColour,
     content,
     setSelectedColour,
+    prompts,
   } = usePlay();
 
-  if (!selectedPrompt) return <PromptList />;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // if (!selectedPrompt) return <PromptList />;
+
+  const promptToDraw = prompts.find((p) => p.drawer === null);
+
+  if (!promptToDraw) {
+    return (
+      <div className="text-center min-h-44 flex flex-col items-center justify-center text-lg">
+        No prompt to draw. All prompts have been drawn. Please wait for an admin
+        to refresh or extend the list of prompts.
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <h1 className="text-center font-bold text-2xl">
-        Draw {selectedPrompt.prompt}
+        Draw {promptToDraw.prompt}
       </h1>
       <div className="flex gap-2 items-center">
         <div
@@ -69,20 +84,25 @@ export default function Drawer() {
           })}
         </div>
       </div>
-      <div>
+      <div className="flex justify-center">
         <Button
+          disabled={isSubmitting}
           onClick={async () => {
-            if (selectedPrompt) {
+            if (promptToDraw) {
               try {
+                setIsSubmitting(true);
                 const response = await axios.post("/api/submit-drawing", {
                   featureKey: "prompts",
                   variationKey: "main-prompts",
                   content: content,
-                  promptId: selectedPrompt.id,
+                  promptId: promptToDraw.id,
                 });
-
-                console.log({ response });
+                toast.success("Submitted drawing.");
               } catch (err: any) {
+                toast.error("Failed to submit drawing");
+
+                setIsSubmitting(false);
+
                 console.error("Error fetching feature:", err);
               }
             }

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import { DevCycleClientsideProvider } from "@devcycle/nextjs-sdk";
 import { getClientContext } from "./devcycle";
 import Navbar from "@/components/Navbar";
 import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from "react-toastify";
 // import the getClientContext method from your shared DevCycle file
 
 const geistSans = Geist({
@@ -38,6 +40,7 @@ export default function RootLayout({
             <div className="mx-auto container p-4">{children}</div>
           </DevCycleClientsideProvider>
         </SessionProvider>
+        <ToastContainer />
       </body>
     </html>
   );

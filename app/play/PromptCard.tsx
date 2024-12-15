@@ -4,7 +4,8 @@ import clsx from "clsx";
 import React from "react";
 import Image from "next/image";
 import logo from "@/assets/cycle-doodle-logo.svg";
-import { FaRegStar, FaStar } from "react-icons/fa";
+import { FaRegStar, FaStar, FaCheck, FaTimes } from "react-icons/fa";
+import isGuessCorrect from "@/utils/isGuessCorrect";
 
 export default function PromptCard({ prompt }: { prompt: Prompt }) {
   const { setSelectedPrompt, audiences, loading } = usePlay();
@@ -15,6 +16,10 @@ export default function PromptCard({ prompt }: { prompt: Prompt }) {
   const drawer = audiences.find((a) => a.key === prompt.drawer);
   const guesser = audiences.find((a) => a.key === prompt.guesser);
   const score = prompt.score;
+
+  const guessIsCorrect = prompt.guess
+    ? isGuessCorrect(prompt.guess, prompt.prompt)
+    : false;
 
   return (
     <div
@@ -56,6 +61,24 @@ export default function PromptCard({ prompt }: { prompt: Prompt }) {
         </div>
       )}
       <div className="w-full">
+        <div className="flex justify-between w-full">
+          <div className="font-bold">Guess</div>
+          {prompt.guess ? (
+            <div className="flex items-center gap-1">
+              <span>{prompt.guess}</span>{" "}
+              <span
+                className={clsx(
+                  "text-white block p-0.5 rounded-full px-2",
+                  !guessIsCorrect ? "bg-red-600" : "bg-green-600"
+                )}
+              >
+                {guessIsCorrect ? <FaCheck /> : <FaTimes />}
+              </span>
+            </div>
+          ) : (
+            <div className="italic">N/A</div>
+          )}{" "}
+        </div>
         <div className="flex justify-between w-full">
           <div className="font-bold">Guesser</div>
           {guesser?.name ? (

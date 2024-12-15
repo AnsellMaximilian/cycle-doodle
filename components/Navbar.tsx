@@ -25,8 +25,9 @@ export default async function Navbar() {
           <Image src={logo} alt="logo" width={60} height={60} />
         </Link>
         <ul className="flex items-center gap-4">
-          <LinkItem href="/" label="Home" />
+          {/* <LinkItem href="/" label="Home" /> */}
           <LinkItem href="/play" label="Play" />
+          <LinkItem href="/gallery" label="Gallery" />
         </ul>
         <div className="ml-auto items-center flex gap-2">
           {session ? (

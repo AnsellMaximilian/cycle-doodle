@@ -40,6 +40,32 @@ export default function Drawer() {
         Draw {promptToDraw.prompt}
       </h1>
       <div className="flex gap-2 items-center">
+        <div className="p-4 flex flex-col gap-4">
+          <div
+            onClick={() => setSelectedColour("white")}
+            className={clsx(
+              "w-10 h-10 rounded-full cursor-pointer hover:brightness-90 p-1 overflow-hidden bg-white border border-white",
+              selectedColour === "white" ? "bg-zinc-200" : "bg-zinc-100"
+            )}
+          >
+            <div
+              className="w-full h-full rounded-full"
+              style={{ backgroundColor: "white" }}
+            ></div>
+          </div>
+          <div
+            onClick={() => setSelectedColour("black")}
+            className={clsx(
+              "w-10 h-10 rounded-full cursor-pointer hover:brightness-90 p-1 overflow-hidden bg-white border border-white",
+              selectedColour === "black" ? "bg-zinc-200" : "bg-zinc-100"
+            )}
+          >
+            <div
+              className="w-full h-full rounded-full"
+              style={{ backgroundColor: "black" }}
+            ></div>
+          </div>
+        </div>
         <div
           className={`${
             teamValues.gridSize > 100 ? "grid-cols-12" : "grid-cols-10"
@@ -72,7 +98,7 @@ export default function Drawer() {
                 onClick={() => setSelectedColour(c)}
                 className={clsx(
                   "w-10 h-10 rounded-full cursor-pointer hover:brightness-90 p-1 overflow-hidden bg-white border border-white",
-                  selectedColour === c ? "bg-zinc-200" : "bg-white"
+                  selectedColour === c ? "bg-zinc-200" : "bg-zinc-100"
                 )}
                 key={c}
               >

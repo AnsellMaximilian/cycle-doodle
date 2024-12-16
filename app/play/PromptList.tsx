@@ -10,6 +10,7 @@ import { FaPlus, FaTimes } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { normalizeString } from "@/utils/isGuessCorrect";
+import { FaArrowRotateLeft } from "react-icons/fa6";
 
 export default function PromptList() {
   const { prompts, loading, audiences, isAdmin } = usePlay();
@@ -23,6 +24,8 @@ export default function PromptList() {
   const [isAdminUpdating, setIsAdminUpdating] = useState(false);
   const [newPromptName, setNewPromptName] = useState("");
   const [createModalOpen, setcreateModalOpen] = useState(false);
+
+  console.log({ prompts });
 
   const handleCreate = async () => {
     if (newPromptName.length < 3) {
@@ -65,6 +68,36 @@ export default function PromptList() {
     }
     setNewPromptName("");
     setcreateModalOpen(false);
+    setIsAdminUpdating(false);
+  };
+
+  const handleReset = async () => {
+    try {
+      setIsAdminUpdating(true);
+
+      const resetPrompts: Prompt[] = prompts.map((p) => ({
+        content: [],
+        drawer: null,
+        guess: null,
+        guesser: null,
+        id: p.id,
+        prompt: p.prompt,
+        score: null,
+      }));
+      const res = await axios.post("/api/update-prompts", {
+        featureKey: "prompts",
+        variationKey: "main-prompts",
+        newPrompts: resetPrompts,
+      });
+
+      toast.success(`Reset prompts successfully`);
+    } catch (err: any) {
+      toast.error("Failed to reset prompts");
+
+      setIsAdminUpdating(false);
+
+      console.error("Error resetting prompts:", err);
+    }
     setIsAdminUpdating(false);
   };
 
@@ -186,16 +219,25 @@ export default function PromptList() {
       )}
 
       {isAdmin && (
-        <button
-          disabled={isAdminUpdating}
-          className="hover:opacity-90 fixed bottom-8 right-8 w-16 h-16 bg-blue-600 rounded-full text-white flex items-center justify-center disabled:opacity-70"
-          onClick={async () => {
-            setcreateModalOpen(true);
-            setNewPromptName("");
-          }}
-        >
-          <FaPlus />
-        </button>
+        <div className="flex gap-4 items-center fixed bottom-8 right-8">
+          <button
+            disabled={isAdminUpdating}
+            className="hover:opacity-80 w-16 h-16 border-blue-600 border-4 text-blue-600 rounded-full bg-white flex items-center justify-center disabled:opacity-70"
+            onClick={handleReset}
+          >
+            <FaArrowRotateLeft />
+          </button>
+          <button
+            disabled={isAdminUpdating}
+            className="hover:opacity-90 w-16 h-16 bg-blue-600 rounded-full text-white flex items-center justify-center disabled:opacity-70"
+            onClick={async () => {
+              setcreateModalOpen(true);
+              setNewPromptName("");
+            }}
+          >
+            <FaPlus />
+          </button>
+        </div>
       )}
 
       {/* Create Modal */}

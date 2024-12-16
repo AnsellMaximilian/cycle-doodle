@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "react";
+import { twMerge } from "tailwind-merge";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "ghost";
@@ -21,7 +22,9 @@ const Button: React.FC<ButtonProps> = ({
     ghost: "bg-transparent text-gray-800 hover:bg-gray-100 focus:ring-gray-200",
   };
 
-  const combinedStyles = clsx(baseStyles, variantStyles[variant], className);
+  const combinedStyles = twMerge(
+    clsx(baseStyles, variantStyles[variant], className)
+  );
 
   return (
     <button className={combinedStyles} {...props}>

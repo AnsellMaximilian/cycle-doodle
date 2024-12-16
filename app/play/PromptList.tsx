@@ -25,8 +25,6 @@ export default function PromptList() {
   const [newPromptName, setNewPromptName] = useState("");
   const [createModalOpen, setcreateModalOpen] = useState(false);
 
-  console.log({ prompts });
-
   const handleCreate = async () => {
     if (newPromptName.length < 3) {
       toast.error("Prompt must at least be 3 characters long.");
